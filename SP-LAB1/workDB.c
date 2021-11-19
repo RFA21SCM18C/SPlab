@@ -138,8 +138,12 @@ void createDB(char* targetfile)
         } 
     }
 }
-
-
+void swap(struct employee* xp, struct employee* yp) 
+{ 
+    struct employee temp = *xp; 
+    *xp = *yp; 
+    *yp = temp; 
+} 
 
 void sort(struct employee arr[], int n) 
 { 
@@ -161,6 +165,190 @@ void sort(struct employee arr[], int n)
         
     } 
 } 
+void delem(int t)
+{
+    int i;
+    int target_ID;
+
+    printf("\nPlease enter an employee ID: ");
+    scanf("%d", &target_ID);          
+    t = searchID(db, counter, target_ID);
+    if (t == -1)
+        {
+            printf("\nUser with employee ID '%d' not found\n", target_ID);
+        }
+    else
+        {
+            i = counter - 1;
+            swap(&db[t], &db[i]);
+            counter = counter - 1;
+            sort(db,counter);
+            }
+    
+};
+   
+int upemp(struct employee arr[], int x)
+{
+    int target_ID;
+
+    printf("\nPlease enter an employee ID: ");
+    scanf("%d", &target_ID);          
+    x = searchID(db, counter, target_ID);
+    if (x == -1){
+        printf("\nUser with employee ID '%d' not found\n", target_ID);
+    }
+    else{
+        
+    int enter;
+    char fname[MAXNAME];
+    char lname[MAXNAME];
+    int Newsalary;
+    int Newid;
+    printf("\nName\t\t\t\tSALARY\t   ID\n");
+    printf("----------------------------------------------\n");
+    printf("%-10s\t%-10s\t%d\t%d\n", arr[x].FName, arr[x].LName, arr[x].salary, arr[x].empID);
+    printf("----------------------------------------------\n");
+    printf("\nWhat data would you like to change?\n");
+    printf("\t(1) First Name\n");
+    printf("\t(2) Last Name\n");
+    printf("\t(3) Salary\n");
+    printf("\t(4) Employee ID\n");
+    printf("\t(5) All of Data\n");
+    printf("Enter your choice: ");
+    scanf("%d", &enter); 
+
+    if (enter == 1)
+    {
+        printf("\n Please enter the new first name: "); 
+        scanf("%s", fname);      
+
+        printf("\nName\t\t\t\tSALARY\t   ID\n");
+        printf("----------------------------------------------\n");
+        printf("%-10s\t%-10s\t%d\t%d\n", fname, arr[x].LName, arr[x].salary, arr[x].empID);
+        printf("----------------------------------------------\n");
+        printf("\nUpdate Complete.\n");
+        strcpy(arr[x].FName, fname);
+    }
+    
+    else if (enter == 2)
+    {
+        printf("\n Please enter the updated last name: "); 
+        scanf("%s", lname);      
+
+        printf("\nName\t\t\t\tSALARY\t   ID\n");
+        printf("----------------------------------------------\n");
+        printf("%-10s\t%-10s\t%d\t%d\n", arr[x].FName, lname, arr[x].salary, arr[x].empID);
+        printf("----------------------------------------------\n");
+        printf("\nUpdate Complete.\n");
+        strcpy(arr[x].LName, lname);
+    }
+
+    else if (enter == 3)
+    {
+        printf("\n Please enter the updated salary: "); 
+        scanf("%d", &Newsalary);      
+
+        printf("\nName\t\t\t\tSALARY\t   ID\n");
+        printf("----------------------------------------------\n");
+        printf("%-10s\t%-10s\t%d\t%d\n", arr[x].FName, arr[x].LName, Newsalary, arr[x].empID);
+        printf("----------------------------------------------\n");
+        printf("\nUpdate Complete.\n");
+        arr[x].salary = Newsalary;
+    }
+
+    else if (enter == 4)
+    {
+        printf("\n Please enter the updated employee ID: "); 
+        scanf("%d", &Newid);      
+
+        printf("\nName\t\t\t\tSALARY\t   ID\n");
+        printf("----------------------------------------------\n");
+        printf("%-10s\t%-10s\t%d\t%d\n", arr[x].FName, arr[x].LName, arr[x].salary, Newid);
+        printf("----------------------------------------------\n");
+        printf("\nUpdate Complete.\n");
+        arr[x].empID = Newid;
+        sort(arr, counter);      
+                
+    }
+    else if (enter == 5)
+    {
+        printf("\n Please enter the updated first name: "); 
+        scanf("%s", fname);      
+        printf("\n Please enter the updated last name: "); 
+        scanf("%s", lname);
+        printf("\n Please enter the updated salary: "); 
+        scanf("%d", &Newsalary);
+        printf("\n Please enter the updated employee ID: "); 
+        scanf("%d", &Newid); 
+        printf("\nName\t\t\t\tSALARY\t   ID\n");
+        printf("----------------------------------------------\n");
+        printf("%-10s\t%-10s\t%d\t%d\n", fname, lname, Newsalary, Newid);
+        printf("----------------------------------------------\n");
+
+
+        printf("\nUpdate Complete.\n");
+        strcpy(arr[x].FName, fname);
+        strcpy(arr[x].LName, lname);
+        arr[x].salary = Newsalary;
+        arr[x].empID = Newid;
+        sort(arr, counter);       
+                
+    }
+    else{
+
+        printf( "\n Error.\n" );   
+    }
+
+    }
+};
+    
+void highsal(int m) 
+{
+    struct employee sal[1000];
+    int i;
+    int j;
+    int min;
+
+    printf("\nEnter a value M: ");
+    scanf("%d", &m);
+
+    memcpy(&sal, &db, sizeof(sal));
+    for (i = 0; i < counter - 1; i++) {   
+        min = i; 
+
+        for (j = i + 1; j < counter; j++) 
+            if (sal[j].salary < sal[min].salary) 
+                min = j; 
+
+        struct employee temp = sal[min]; 
+        sal[min]= sal[i]; 
+        sal[i] = temp;
+    };
+    PrintDB(sal, m);
+};
+
+void LNameSearch(struct employee arr[], int m, char* lname) {
+
+    struct employee ln[1000];
+    int n = 0;
+    int i = 0;
+    printf("\nPlease enter  last name: ");
+    scanf("%s", lname);
+    while (i < m)
+    {
+        if (strcasecmp(arr[i].LName, lname) == 0)
+        {
+            strcpy(ln[n].FName, arr[i].FName);
+            strcpy(ln[n].LName, arr[i].LName);
+            ln[n].salary = arr[i].salary;
+            ln[n].empID = arr[i].empID;
+            n++;
+        }
+        i++;
+    }
+
+    PrintDB(ln, n);
+}
 
 int main(int argc, char *argv[])
 {
@@ -185,6 +373,10 @@ int main(int argc, char *argv[])
             printf("\t(3) Lookup by Last Name\n");
             printf("\t(4) Add an Employee\n");
             printf("\t(5) Quit\n");
+            printf("\t(6) Remove an Employee\n");
+            printf("\t(7) Update an employee's Information\n");
+            printf("\t(8) Print the M employees with the highest salaries\n");
+            printf("\t(9) Find all employees with matching last name\n");
             printf("----------------------------------\n");
             printf("Enter your choice: ");
 
@@ -249,6 +441,34 @@ int main(int argc, char *argv[])
                 return 0;
 
             }
+             else if(enter == 6){
+
+                int n;
+
+                delem(n);
+
+            }
+            else if(enter == 7){
+
+                int n;
+
+                upemp(db,n);
+
+            }
+            else if(enter == 8){
+
+                int m;
+
+                highsal(m);
+
+            }
+            else if(enter == 9){
+
+                char target_name[MAXNAME];
+
+                LNameSearch(db,counter,target_name);
+
+            }                   
             else{
 
                 printf( "\n Error.\n" );
